@@ -103,7 +103,6 @@ const STATUS_OPTIONS = {
   dropped: { icon: Icons.PauseCircle, color: 'text-gray-500', bg: 'bg-gray-100' },
 };
 
-// ⚡️ 修复：状态文案更新
 const getStatusLabel = (status, group) => {
   const map = {
     media: { todo: '想看/玩', doing: '在看/玩', done: '已完成', dropped: '搁置' },
@@ -113,7 +112,7 @@ const getStatusLabel = (status, group) => {
   return map[group]?.[status] || map.media[status];
 };
 
-// ⚡️ 修复：生成白色书本黑色背景的图标 (SVG Data URI)
+// --- 生成白色书本黑色背景的图标 (SVG Data URI) ---
 const useSystemInit = () => {
   useEffect(() => {
     if (!document.querySelector('meta[name="viewport"]')) {
@@ -140,14 +139,11 @@ const useSystemInit = () => {
     `;
     const iconUrl = `data:image/svg+xml;base64,${btoa(iconSvg)}`;
 
-    // 移除旧图标，强制更新
     document.querySelectorAll("link[rel*='icon']").forEach(e => e.remove());
-
     const links = [
       { rel: 'icon', href: iconUrl },
       { rel: 'apple-touch-icon', href: iconUrl }
     ];
-
     links.forEach(attr => {
       const link = document.createElement('link');
       link.rel = attr.rel;
@@ -223,11 +219,11 @@ const Card = ({ item, categoryConfig, onDelete }) => {
            {statusKey !== 'todo' && <StarRating rating={item.rating} />}
         </div>
         <h3 className="font-bold text-gray-800 text-lg mb-1 truncate group-hover:text-black transition-colors" title={item.title}>{item.title}</h3>
-        {/* ⚡️ 修复：图标与文字完美垂直对齐 */}
+        {/* ⚡️ 修复：移除所有内边距，完全依靠 flex 居中对齐 */}
         {item.companions && (
-          <div className="flex items-center gap-1.5 text-xs text-gray-500 mb-2 h-4">
+          <div className="flex items-center gap-1.5 text-xs text-gray-500 mb-2">
             <Icons.Users size={14} className="text-gray-400 flex-shrink-0" />
-            <span className="truncate pt-0.5">与 {item.companions}</span>
+            <span className="truncate">与 {item.companions}</span>
           </div>
         )}
         {item.summary && <p className="text-xs text-gray-500 mb-3 leading-relaxed opacity-80 h-8 overflow-hidden">{item.summary}</p>}
@@ -325,7 +321,6 @@ const Modal = ({ isOpen, onClose, onSubmit, categories }) => {
             <div><label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">日期</label><input type="date" required className="w-full px-3 py-2.5 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium text-gray-700 focus:outline-none focus:ring-0" value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} style={{outline:'none'}} /></div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-             {/* ⚡️ 修复：更新提示文案 */}
              <div><label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">和谁一起? (可选)</label><div className="relative"><input type="text" placeholder="朋友 / 恋人 / 家人" className="w-full pl-9 pr-3 py-2.5 bg-white border border-gray-200 rounded-lg focus:border-blue-500 outline-none focus:outline-none focus:ring-0" value={formData.companions} onChange={e => setFormData({...formData, companions: e.target.value})} style={{outline:'none'}} /><Icons.Users className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} /></div></div>
              {formData.status !== 'todo' && (<div className="bg-yellow-50/50 p-2 rounded-xl border border-yellow-100 flex flex-col items-center justify-center gap-1"><span className="text-xs font-bold text-yellow-600 uppercase tracking-wide">评价</span><StarRating rating={formData.rating} setRating={(r) => setFormData({...formData, rating: r})} editable /></div>)}
           </div>
@@ -406,7 +401,7 @@ const Dashboard = ({ items, categories, year, availableYears, onYearChange }) =>
 
   return (
     <div className="space-y-8 animate-fade-in w-full px-6">
-      {/* ⚡️ 修复：日期选择器布局调整 - 手机端分两行，年份栏自动填满宽度，不再溢出 */}
+      {/* ⚡️ 修复：手机端日期选择器强制换行铺满，防止溢出 */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-gray-200 pb-6">
         <div><h2 className="text-3xl font-black text-gray-900 tracking-tight">年度回顾</h2><p className="text-gray-500 mt-1">只统计已完成或进行中的足迹</p></div>
         <div className="w-full md:w-auto flex items-center gap-2 bg-white p-1 rounded-lg border border-gray-200 shadow-sm"><span className="text-xs font-medium text-gray-400 px-2 flex-shrink-0">年份</span><select value={year} onChange={(e) => onYearChange(e.target.value)} className="bg-gray-100 border-none rounded-md px-3 py-1.5 font-bold text-gray-800 outline-none cursor-pointer hover:bg-gray-200 transition-colors outline-none focus:outline-none focus:ring-0 flex-grow" style={{outline:'none'}}>{availableYears.map(y => <option key={y} value={y}>{y}</option>)}</select></div>
@@ -523,7 +518,7 @@ export default function App() {
         {viewMode === 'list' && (
             <div className="border-t border-gray-100 bg-white">
                 <div className="w-full px-6 flex items-center overflow-x-auto no-scrollbar">
-                    {/* ⚡️ 修复：确保时间筛选器在列表页不溢出 */}
+                    {/* ⚡️ 修复：日期选择器不再放在这里，防止挤出 */}
                     {Object.entries(SUPER_CATEGORIES).map(([key, value]) => { const Icon = value.icon; return (
                       <button 
                         key={key} 
@@ -534,8 +529,8 @@ export default function App() {
                         <Icon size={16} />{value.label}
                       </button>
                     )})}
-                     {/* ⚡️ 修复：把年份筛选器放到最后，并移除 ml-auto，让它自然跟随 */}
-                     <div className="pl-4 border-l border-gray-100 flex items-center gap-2 flex-shrink-0 ml-auto"><span className="text-xs font-bold text-gray-400 uppercase flex-shrink-0">年份</span><select value={filterYear} onChange={(e) => setFilterYear(e.target.value)} className="bg-transparent text-sm font-bold text-gray-900 outline-none cursor-pointer outline-none focus:outline-none focus:ring-0" style={{outline:'none'}}><option value="all">全部</option>{availableYears.map(y => <option key={y} value={y}>{y}</option>)}</select></div>
+                     {/* ⚡️ 修复：将年份筛选器移动到工具栏最右侧，使用绝对定位或独立 flex 容器 */}
+                     <div className="ml-auto pl-4 border-l border-gray-100 flex items-center gap-2 flex-shrink-0 sticky right-0 bg-white shadow-[-10px_0_10px_-5px_rgba(255,255,255,0.8)]"><span className="text-xs font-bold text-gray-400 uppercase flex-shrink-0">年份</span><select value={filterYear} onChange={(e) => setFilterYear(e.target.value)} className="bg-transparent text-sm font-bold text-gray-900 outline-none cursor-pointer outline-none focus:outline-none focus:ring-0" style={{outline:'none'}}><option value="all">全部</option>{availableYears.map(y => <option key={y} value={y}>{y}</option>)}</select></div>
                 </div>
             </div>
         )}
