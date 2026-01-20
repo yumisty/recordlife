@@ -27,14 +27,13 @@ const GlobalStyles = () => (
     .safe-bottom-padding { padding-bottom: env(safe-area-inset-bottom); }
     .animate-fade-in { animation: fadeIn 0.3s ease-out; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-    
-    /* 强制单行文本不换行 */
     .whitespace-nowrap { white-space: nowrap; }
   `}</style>
 );
 
 // --- 图标组件 (SVG) ---
 const Icons = {
+  // 这就是那本“摊开的书”，稍后会用到它生成 App 图标
   BookOpen: (p) => <svg {...p} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>,
   Search: (p) => <svg {...p} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>,
   Settings: (p) => <svg {...p} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>,
@@ -95,7 +94,7 @@ const DEFAULT_CATEGORIES = {
 
 const EMOJI_PICKER = ['😀', '😂', '🥰', '😎', '🤔', '😴', '😭', '🤯', '🥳', '👻', '💀', '👽', '🤖', '💩', '👍', '👎', '👊', '✌️', '🫶', '🧠', '👀', '👶', '🐶', '🐱', '🐭', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐵', '🐔', '🐧', '🐦', '🐤', '🦆', '🦅', '🦉', '🦇', '🐺', '🐗', '🐴', '🦄', '🐝', '🐛', '🦋', '🐌', '🐞', '🐜', '🦟', '🦗', '🕷️', '🕸️', '🦂', '🐢', '🐍', '🦎', '🦖', '🦕', '🐙', '🦑', '🦐', '🦞', '🦀', '🐡', '🐠', '🐟', '🐬', '🐳', '🐋', '🦈', '🐊', '🐅', '🐆', '🦓', '🦍', '🦧', '🦣', '🐘', '🦛', '🦏', '🐪', '🐫', '🦒', '🦘', '🦬', '🐃', '🐂', '🐄', '🐎', '🐖', '🐏', '🐑', '🦙', '🐐', '🦌', '🐕', '🐩', '🦮', '🐕‍🦺', '🐈', '🐈‍⬛', '🐓', '🦃', '🦚', '🦜', '🦢', '🦩', '🕊️', '🐇', '🦝', '🦨', '🦡', '🦦', '🦫', '🦥', '🐁', '🐀', '🐿️', '🦔', '🐾', '🐉', '🐲', '🌵', '🎄', '🌲', '🌳', '🌴', '🪵', '🌱', '🌿', '☘️', '🍀', '🎍', '🪴', '🎋', '🍃', '🍂', '🍁', '🍄', '🐚', '🪨', '🌾', '💐', '🌷', '🌹', '🥀', '🌺', '🌸', '🌼', '🌻', '🌞', '🌝', '🌛', '🌜', '🌚', '🌕', '🌖', '🌗', '🌘', '🌑', '🌒', '🌓', '🌔', '🌙', '🌎', '🌍', '🌏', '🪐', '💫', '⭐️', '🌟', '✨', '⚡️', '☄️', '💥', '🔥', '🌪️', '🌈', '☀️', '🌤️', '⛅️', '🌥️', '☁️', '🌦️', '🌧️', '🌨️', '🌩️', '', '❄️', '☃️', '⛄️', '🌬️', '💨', '💧', '💦', '🫧', '☂️', '☔️', '⛱️', '⚡', '❄️', '🔥', '💧', '⚽', '🏀', '🏈', '⚾', '🎾', '🏐', '🏉', '🎱', '🏓', '🏸', '🥅', '🏒', '🏑', '🏏', '🥍', '🏹', '🎣', '🤿', '🥊', '🥋', '⛸️', '🥌', '🛷', '🎿', '⛷️', '🏂', '🪂', '🏋️‍♀️', '🤼‍♀️', '🤸‍♀️', '⛹️‍♀️', '🤺', '🤾‍♀️', '🏌️‍♀️', '🏇', '🧘‍♀️', '🏄‍♀️', '🏊‍♀️', '🤽‍♀️', '🚣‍♀️', '🧗‍♀️', '🚵‍♀️', '🚴‍♀️', '🏆', '🥇', '🥈', '🥉', '🏅', '🎖️', '🏵️', '🎗️', '🎫', '🎟️', '🎪', '🤹', '🎭', '🩰', '🎨', '🎬', '🎤', '🎧', '🎼', '🎹', '🥁', '🪘', '🎷', '🎺', '🪗', '🎸', '🪕', '🎻', '🎲', '♟️', '🎯', '🎳', '🎮', '🎰', '🧩', '🚗', '🚕', '🚙', '🚌', '🚎', '🏎️', '🚓', '🚑', '🚒', '🚐', '🛻', '🚚', '🚛', '🚜', '🦯', '🦽', '🦼', '🛴', '🚲', '🛵', '🏍️', '🛺', '🚨', '🚔', '🚍', '🚘', '🚖', '🚡', '🚠', '🚟', '🚃', '🚋', '🚞', '🚝', '🚄', '🚅', '🚈', '🚂', '🚆', '🚇', '🚊', '🚉', '✈️', '🛫', '🛬', '🛩️', '💺', '🛰️', '🚀', '🛸', '🚁', '🛶', '⛵', '🚤', '🛥️', '🛳️', '⛴️', '🚢', '⚓', '🪝', '⛽', '🚧', '🚦', '🚥', '🚏', '🗺️', '🗿', '🗽', '🗼', '🏰', '🏯', '🏟️', '🎡', '🎢', '🎠', '⛲', '⛱️', '🏖️', '🏝️', '🏜️', '🌋', '⛰️', '🏔️', '🗻', '🏕️', '⛺', '🛖', '🏠', '🏡', '🏘️', '🏚️', '🏗️', '🏭', '🏢', '🏬', '🏣', '🏤', '🏥', '🏦', '🏨', '🏪', '🏫', '🏩', '💒', '🏛️', '⛪', '🕌', '🕍', '🛕', '🕋', '⛩️', '🛤️', '🛣️', '🗾', '🎑', '🏞️', '🌅', '🌄', '🌠', '🎇', '🎆', '🌇', '🌆', '🏙️', '🌃', '🌌', '🌉', '🌁'];
 
-const RATING_LABELS = ['差', '一般', '还行', '不错', '神作']; // 精简文案
+const RATING_LABELS = ['差', '一般', '还行', '不错', '神作'];
 
 const STATUS_OPTIONS = {
   todo:    { icon: Icons.Flag,        color: 'text-blue-500', bg: 'bg-blue-100' },
@@ -104,16 +103,17 @@ const STATUS_OPTIONS = {
   dropped: { icon: Icons.PauseCircle, color: 'text-gray-500', bg: 'bg-gray-100' },
 };
 
-// ⚡️ 修复：精简文案，防止换行
+// ⚡️ 修复：状态文案更新
 const getStatusLabel = (status, group) => {
   const map = {
-    media: { todo: '待办', doing: '在看', done: '完成', dropped: '搁置' },
-    life:  { todo: '计划', doing: '进行', done: '完成', dropped: '放弃' },
-    place: { todo: '想去', doing: '途中', done: '去过', dropped: '取消' },
+    media: { todo: '想看/玩', doing: '在看/玩', done: '已完成', dropped: '搁置' },
+    life:  { todo: '想做', doing: '进行中', done: '已完成', dropped: '放弃' },
+    place: { todo: '想去', doing: '旅途中', done: '已完成', dropped: '取消' },
   };
   return map[group]?.[status] || map.media[status];
 };
 
+// ⚡️ 修复：生成白色书本黑色背景的图标 (SVG Data URI)
 const useSystemInit = () => {
   useEffect(() => {
     if (!document.querySelector('meta[name="viewport"]')) {
@@ -129,13 +129,30 @@ const useSystemInit = () => {
       link.href = 'https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css';
       document.head.appendChild(link);
     }
-    const iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" fill="#18181b"/><path d="M256 96 L256 416" stroke="white" stroke-width="32" stroke-linecap="round"/><path d="M160 256 L352 256" stroke="white" stroke-width="32" stroke-linecap="round"/><circle cx="256" cy="256" r="64" fill="white"/></svg>`;
+    
+    // 生成黑色背景、白色书本的图标 (适用于 Favicon 和 Apple Touch Icon)
+    const iconSvg = `
+      <svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="512" height="512" fill="black"/>
+        <path d="M128 106.667H256V426.667H128C104.427 426.667 85.3333 407.573 85.3333 384V149.333C85.3333 125.76 104.427 106.667 128 106.667Z" stroke="white" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M384 106.667H256V426.667H384C407.573 426.667 426.667 407.573 426.667 384V149.333C426.667 125.76 407.573 106.667 384 106.667Z" stroke="white" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    `;
     const iconUrl = `data:image/svg+xml;base64,${btoa(iconSvg)}`;
-    const links = [{ rel: 'icon', href: iconUrl }, { rel: 'apple-touch-icon', href: iconUrl }];
+
+    // 移除旧图标，强制更新
+    document.querySelectorAll("link[rel*='icon']").forEach(e => e.remove());
+
+    const links = [
+      { rel: 'icon', href: iconUrl },
+      { rel: 'apple-touch-icon', href: iconUrl }
+    ];
+
     links.forEach(attr => {
-      let link = document.querySelector(`link[rel="${attr.rel}"]`);
-      if (!link) { link = document.createElement('link'); link.rel = attr.rel; document.head.appendChild(link); }
+      const link = document.createElement('link');
+      link.rel = attr.rel;
       link.href = attr.href;
+      document.head.appendChild(link);
     });
   }, []);
 };
@@ -194,7 +211,6 @@ const Card = ({ item, categoryConfig, onDelete }) => {
         <div className={`absolute inset-0 flex items-center justify-center bg-gray-50 text-5xl ${item.coverUrl ? 'hidden' : 'flex'}`}>
           <span className="opacity-50 filter grayscale">{categoryLabel}</span>
         </div>
-        {/* ⚡️ 修复：使用 whitespace-nowrap 防止文字换行 */}
         <div className={`absolute top-2 left-2 text-xs px-2 py-0.5 rounded-full font-bold shadow-sm flex items-center gap-1 whitespace-nowrap ${statusConfig.bg} ${statusConfig.color} bg-opacity-90`}>
           <StatusIcon size={10} strokeWidth={3} /> {statusLabel}
         </div>
@@ -207,11 +223,11 @@ const Card = ({ item, categoryConfig, onDelete }) => {
            {statusKey !== 'todo' && <StarRating rating={item.rating} />}
         </div>
         <h3 className="font-bold text-gray-800 text-lg mb-1 truncate group-hover:text-black transition-colors" title={item.title}>{item.title}</h3>
-        {/* ⚡️ 修复：图标与文字对齐，使用 leading-none 和 relative top-[1px] 微调 */}
+        {/* ⚡️ 修复：图标与文字完美垂直对齐 */}
         {item.companions && (
-          <div className="flex items-center gap-1.5 text-xs text-gray-500 mb-2 leading-none">
-            <Icons.Users size={13} className="text-gray-400 flex-shrink-0 relative top-[1px]" />
-            <span className="truncate">与 {item.companions}</span>
+          <div className="flex items-center gap-1.5 text-xs text-gray-500 mb-2 h-4">
+            <Icons.Users size={14} className="text-gray-400 flex-shrink-0" />
+            <span className="truncate pt-0.5">与 {item.companions}</span>
           </div>
         )}
         {item.summary && <p className="text-xs text-gray-500 mb-3 leading-relaxed opacity-80 h-8 overflow-hidden">{item.summary}</p>}
@@ -305,11 +321,12 @@ const Modal = ({ isOpen, onClose, onSubmit, categories }) => {
           </div>
           <div><div className="flex justify-between mb-1"><label className="text-xs font-bold text-gray-500 uppercase tracking-wide">名称 *</label><button type="button" onClick={handleSearchInfo} disabled={!formData.title} className="text-xs text-blue-600 hover:underline disabled:opacity-50 flex items-center gap-1 outline-none focus:outline-none focus:ring-0" style={{outline:'none'}}><Icons.Search size={10} /> 搜资料</button></div><input required autoFocus type="text" placeholder="标题 / 地点 / 菜名..." className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-black focus:border-black outline-none transition-all text-lg font-medium focus:outline-none focus:ring-0" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} style={{outline:'none'}} /></div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div><label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">分类</label><div className="relative"><select className="w-full pl-3 pr-8 py-2.5 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none appearance-none font-medium text-gray-700 focus:outline-none focus:ring-0" value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} style={{outline:'none'}}><optgroup label="📺 影音娱乐">{Object.entries(categories).filter(([,v]) => v.group === 'media').map(([k,v]) => <option key={k} value={k}>{v.label} {v.label}</option>)}</optgroup><optgroup label="🍳 生活成就">{Object.entries(categories).filter(([,v]) => v.group === 'life').map(([k,v]) => <option key={k} value={k}>{v.label} {v.label}</option>)}</optgroup><optgroup label="📍 现实足迹">{Object.entries(categories).filter(([,v]) => v.group === 'place').map(([k,v]) => <option key={k} value={k}>{v.label} {v.label}</option>)}</optgroup></select><Icons.ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={16} /></div></div>
+            <div><label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">分类</label><div className="relative"><select className="w-full pl-3 pr-8 py-2.5 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none appearance-none font-medium text-gray-700 focus:outline-none focus:ring-0" value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} style={{outline:'none'}}><optgroup label="📺 影音娱乐">{Object.entries(categories).filter(([,v]) => v.group === 'media').map(([k,v]) => <option key={k} value={k}>{v.label}</option>)}</optgroup><optgroup label="🍳 生活成就">{Object.entries(categories).filter(([,v]) => v.group === 'life').map(([k,v]) => <option key={k} value={k}>{v.label}</option>)}</optgroup><optgroup label="📍 现实足迹">{Object.entries(categories).filter(([,v]) => v.group === 'place').map(([k,v]) => <option key={k} value={k}>{v.label}</option>)}</optgroup></select><Icons.ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={16} /></div></div>
             <div><label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">日期</label><input type="date" required className="w-full px-3 py-2.5 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium text-gray-700 focus:outline-none focus:ring-0" value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} style={{outline:'none'}} /></div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-             <div><label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">和谁一起? (可选)</label><div className="relative"><input type="text" placeholder="女朋友 / 基友 / 爸妈" className="w-full pl-9 pr-3 py-2.5 bg-white border border-gray-200 rounded-lg focus:border-blue-500 outline-none focus:outline-none focus:ring-0" value={formData.companions} onChange={e => setFormData({...formData, companions: e.target.value})} style={{outline:'none'}} /><Icons.Users className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} /></div></div>
+             {/* ⚡️ 修复：更新提示文案 */}
+             <div><label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">和谁一起? (可选)</label><div className="relative"><input type="text" placeholder="朋友 / 恋人 / 家人" className="w-full pl-9 pr-3 py-2.5 bg-white border border-gray-200 rounded-lg focus:border-blue-500 outline-none focus:outline-none focus:ring-0" value={formData.companions} onChange={e => setFormData({...formData, companions: e.target.value})} style={{outline:'none'}} /><Icons.Users className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} /></div></div>
              {formData.status !== 'todo' && (<div className="bg-yellow-50/50 p-2 rounded-xl border border-yellow-100 flex flex-col items-center justify-center gap-1"><span className="text-xs font-bold text-yellow-600 uppercase tracking-wide">评价</span><StarRating rating={formData.rating} setRating={(r) => setFormData({...formData, rating: r})} editable /></div>)}
           </div>
           <div className="space-y-3"><div className="grid grid-cols-1 gap-3"><input type="text" placeholder="一句话简介 / 位置 / 备注" className="w-full px-3 py-2 text-sm bg-white border border-gray-200 rounded-lg focus:border-blue-500 outline-none focus:outline-none focus:ring-0" value={formData.summary} onChange={e => setFormData({...formData, summary: e.target.value})} style={{outline:'none'}} /><div className="flex flex-col sm:flex-row gap-3"><input type="url" placeholder="封面图片 URL" className="w-full sm:w-1/2 px-3 py-2 text-sm bg-white border border-gray-200 rounded-lg focus:border-blue-500 outline-none focus:outline-none focus:ring-0" value={formData.coverUrl} onChange={e => setFormData({...formData, coverUrl: e.target.value})} style={{outline:'none'}} /><input type="url" placeholder="相关链接 URL" className="w-full sm:w-1/2 px-3 py-2 text-sm bg-white border border-gray-200 rounded-lg focus:border-blue-500 outline-none focus:outline-none focus:ring-0" value={formData.link} onChange={e => setFormData({...formData, link: e.target.value})} style={{outline:'none'}} /></div></div></div>
@@ -389,10 +406,10 @@ const Dashboard = ({ items, categories, year, availableYears, onYearChange }) =>
 
   return (
     <div className="space-y-8 animate-fade-in w-full px-6">
-      {/* ⚡️ 修复：手机端布局优化，防止时间溢出 */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-200 pb-6">
+      {/* ⚡️ 修复：日期选择器布局调整 - 手机端分两行，年份栏自动填满宽度，不再溢出 */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-gray-200 pb-6">
         <div><h2 className="text-3xl font-black text-gray-900 tracking-tight">年度回顾</h2><p className="text-gray-500 mt-1">只统计已完成或进行中的足迹</p></div>
-        <div className="flex items-center gap-2 bg-white p-1 rounded-lg border border-gray-200 shadow-sm w-full sm:w-auto"><span className="text-xs font-medium text-gray-400 px-2 flex-shrink-0">选择年份</span><select value={year} onChange={(e) => onYearChange(e.target.value)} className="bg-gray-100 border-none rounded-md px-3 py-1.5 font-bold text-gray-800 outline-none cursor-pointer hover:bg-gray-200 transition-colors outline-none focus:outline-none focus:ring-0 flex-grow sm:flex-grow-0" style={{outline:'none'}}>{availableYears.map(y => <option key={y} value={y}>{y}</option>)}</select></div>
+        <div className="w-full md:w-auto flex items-center gap-2 bg-white p-1 rounded-lg border border-gray-200 shadow-sm"><span className="text-xs font-medium text-gray-400 px-2 flex-shrink-0">年份</span><select value={year} onChange={(e) => onYearChange(e.target.value)} className="bg-gray-100 border-none rounded-md px-3 py-1.5 font-bold text-gray-800 outline-none cursor-pointer hover:bg-gray-200 transition-colors outline-none focus:outline-none focus:ring-0 flex-grow" style={{outline:'none'}}>{availableYears.map(y => <option key={y} value={y}>{y}</option>)}</select></div>
       </div>
       {!stats ? <EmptyState type="analytics" year={year} /> : (
         <>
@@ -506,7 +523,7 @@ export default function App() {
         {viewMode === 'list' && (
             <div className="border-t border-gray-100 bg-white">
                 <div className="w-full px-6 flex items-center overflow-x-auto no-scrollbar">
-                    {/* ⚡️ 修复：使用下划线导航风格，且无聚焦黑框 */}
+                    {/* ⚡️ 修复：确保时间筛选器在列表页不溢出 */}
                     {Object.entries(SUPER_CATEGORIES).map(([key, value]) => { const Icon = value.icon; return (
                       <button 
                         key={key} 
@@ -517,7 +534,8 @@ export default function App() {
                         <Icon size={16} />{value.label}
                       </button>
                     )})}
-                     <div className="ml-auto pl-4 border-l border-gray-100 flex items-center gap-2"><span className="text-xs font-bold text-gray-400 uppercase">年份</span><select value={filterYear} onChange={(e) => setFilterYear(e.target.value)} className="bg-transparent text-sm font-bold text-gray-900 outline-none cursor-pointer outline-none focus:outline-none focus:ring-0" style={{outline:'none'}}><option value="all">全部</option>{availableYears.map(y => <option key={y} value={y}>{y}</option>)}</select></div>
+                     {/* ⚡️ 修复：把年份筛选器放到最后，并移除 ml-auto，让它自然跟随 */}
+                     <div className="pl-4 border-l border-gray-100 flex items-center gap-2 flex-shrink-0 ml-auto"><span className="text-xs font-bold text-gray-400 uppercase flex-shrink-0">年份</span><select value={filterYear} onChange={(e) => setFilterYear(e.target.value)} className="bg-transparent text-sm font-bold text-gray-900 outline-none cursor-pointer outline-none focus:outline-none focus:ring-0" style={{outline:'none'}}><option value="all">全部</option>{availableYears.map(y => <option key={y} value={y}>{y}</option>)}</select></div>
                 </div>
             </div>
         )}
