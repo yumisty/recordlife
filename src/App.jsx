@@ -219,10 +219,9 @@ const Card = ({ item, categoryConfig, onDelete }) => {
            {statusKey !== 'todo' && <StarRating rating={item.rating} />}
         </div>
         <h3 className="font-bold text-gray-800 text-lg mb-1 truncate group-hover:text-black transition-colors" title={item.title}>{item.title}</h3>
-        {/* ⚡️ 修复：移除所有内边距，完全依靠 flex 居中对齐 */}
+        {/* ⚡️ 修复：删除了陪朋友的图标，仅保留文字，并确保对齐 */}
         {item.companions && (
-          <div className="flex items-center gap-1.5 text-xs text-gray-500 mb-2">
-            <Icons.Users size={14} className="text-gray-400 flex-shrink-0" />
+          <div className="text-xs text-gray-500 mb-2 h-4 flex items-center">
             <span className="truncate">与 {item.companions}</span>
           </div>
         )}
@@ -321,6 +320,7 @@ const Modal = ({ isOpen, onClose, onSubmit, categories }) => {
             <div><label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">日期</label><input type="date" required className="w-full px-3 py-2.5 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium text-gray-700 focus:outline-none focus:ring-0" value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} style={{outline:'none'}} /></div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+             {/* ⚡️ 修复：更新提示文案 */}
              <div><label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">和谁一起? (可选)</label><div className="relative"><input type="text" placeholder="朋友 / 恋人 / 家人" className="w-full pl-9 pr-3 py-2.5 bg-white border border-gray-200 rounded-lg focus:border-blue-500 outline-none focus:outline-none focus:ring-0" value={formData.companions} onChange={e => setFormData({...formData, companions: e.target.value})} style={{outline:'none'}} /><Icons.Users className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} /></div></div>
              {formData.status !== 'todo' && (<div className="bg-yellow-50/50 p-2 rounded-xl border border-yellow-100 flex flex-col items-center justify-center gap-1"><span className="text-xs font-bold text-yellow-600 uppercase tracking-wide">评价</span><StarRating rating={formData.rating} setRating={(r) => setFormData({...formData, rating: r})} editable /></div>)}
           </div>
