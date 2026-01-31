@@ -29,7 +29,6 @@ const GlobalStyles = () => (
     @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     .whitespace-nowrap { white-space: nowrap; }
     
-    /* ⚡️ 修复：强制卡片图片比例 (兼容所有浏览器) */
     .aspect-poster {
       position: relative;
       width: 100%;
@@ -74,6 +73,9 @@ const Icons = {
   Film: (p) => <svg {...p} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><line x1="7" x2="7" y1="3" y2="21"/><line x1="17" x2="17" y1="3" y2="21"/><line x1="3" x2="21" y1="12" y2="12"/><line x1="3" x2="7" y1="7" y2="7"/><line x1="3" x2="7" y1="17" y2="17"/><line x1="17" x2="21" y1="17" y2="17"/><line x1="17" x2="21" y1="7" y2="7"/></svg>,
   MapPin: (p) => <svg {...p} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>,
   Image: (p) => <svg {...p} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>,
+  // ⚡️ 新增：布局切换图标
+  Grid: (p) => <svg {...p} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>,
+  GridCompact: (p) => <svg {...p} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/><path d="M15 3v18"/></svg>,
 };
 
 // --- 配置数据 ---
@@ -145,7 +147,6 @@ const useSystemInit = () => {
       document.head.appendChild(link);
     }
     
-    // 生成黑色背景、白色书本的图标 (适用于 Favicon 和 Apple Touch Icon)
     const iconSvg = `
       <svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect width="512" height="512" fill="black"/>
@@ -214,7 +215,6 @@ const Card = ({ item, categoryConfig, onDelete, onClick }) => {
   const StatusIcon = statusConfig.icon;
   const statusLabel = getStatusLabel(statusKey, config.group || 'media');
 
-  // 封面图显示逻辑：优先显示图片，失败则显示占位
   const [imgError, setImgError] = useState(false);
 
   return (
@@ -222,7 +222,6 @@ const Card = ({ item, categoryConfig, onDelete, onClick }) => {
       onClick={() => onClick(item)}
       className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300 group relative flex flex-col cursor-pointer h-full"
     >
-      {/* ⚡️ 修复：强制 3:4 比例容器，padding-bottom 方案兼容性最好 */}
       <div className="aspect-poster bg-gray-100">
         {!imgError && item.coverUrl ? (
           <img 
@@ -249,9 +248,16 @@ const Card = ({ item, categoryConfig, onDelete, onClick }) => {
       
       <div className="p-3 flex flex-col flex-grow">
         <h3 className="font-bold text-gray-900 text-sm mb-1 line-clamp-2 leading-tight group-hover:text-black transition-colors" title={item.title}>{item.title}</h3>
-        <div className="flex items-center justify-between mt-auto pt-2">
-            <span className="text-[10px] text-gray-400 font-medium">{item.date}</span>
+        {item.companions && (
+          <div className="text-xs text-gray-500 mb-2 h-4 flex items-center">
+            <span className="truncate">与 {item.companions}</span>
+          </div>
+        )}
+        {item.summary && <p className="text-xs text-gray-500 mb-3 leading-relaxed opacity-80 h-8 overflow-hidden">{item.summary}</p>}
+        <div className="relative mt-auto pt-3 border-t border-gray-50">
+           {item.comment ? <p className="text-sm text-gray-700 italic leading-relaxed">"{item.comment}"</p> : <p className="text-xs text-gray-300 italic">暂无短评...</p>}
         </div>
+        <button onClick={() => onDelete(item.id)} className="absolute top-2 left-2 p-1.5 bg-white bg-opacity-90 text-gray-400 hover:text-red-500 rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-all transform -translate-x-2 group-hover:translate-x-0 outline-none focus:outline-none focus:ring-0" title="删除" style={{outline:'none'}}><Icons.Trash2 size={14} /></button>
       </div>
     </div>
   );
@@ -309,7 +315,6 @@ const Modal = ({ isOpen, onClose, onSubmit, categories, initialData }) => {
       }
   }
 
-  // ⚡️ 修复：点击遮罩层关闭，且阻止内容区域冒泡
   return (
     <div className="fixed inset-0 flex items-center justify-center p-4 overflow-y-auto" style={{ backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 999, backdropFilter: 'blur(5px)' }} onClick={onClose}>
       <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl animate-fade-in my-8 flex flex-col max-h-[90vh]" onClick={e => e.stopPropagation()}>
@@ -321,7 +326,6 @@ const Modal = ({ isOpen, onClose, onSubmit, categories, initialData }) => {
           <button onClick={onClose} className="text-gray-400 hover:text-gray-800 transition-colors outline-none focus:outline-none focus:ring-0" style={{outline:'none'}}><Icons.X size={20} /></button>
         </div>
         <form onSubmit={handleSubmit} className="p-6 space-y-5 overflow-y-auto custom-scrollbar">
-          {/* 状态选择 */}
           <div className="bg-gray-100 p-1 rounded-xl flex gap-1">
              {Object.keys(STATUS_OPTIONS).map(key => {
                const config = STATUS_OPTIONS[key];
@@ -394,13 +398,13 @@ const Modal = ({ isOpen, onClose, onSubmit, categories, initialData }) => {
           
           <div><label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">详细记录</label><textarea rows="3" placeholder="写点什么..." className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-black focus:border-black outline-none resize-none text-gray-700 leading-relaxed focus:outline-none focus:ring-0" value={formData.comment} onChange={e => setFormData({...formData, comment: e.target.value})} style={{outline:'none'}} /></div>
           
-          <div className="flex gap-3 pt-2">
+          <div className="flex gap-3 pt-2 items-center">
             {initialData && (
-                <button type="button" onClick={handleDelete} className="flex-shrink-0 bg-white text-red-500 border border-red-100 py-3.5 px-4 rounded-xl font-bold hover:bg-red-50 transition-colors outline-none focus:outline-none focus:ring-0"><Icons.Trash2 size={20} /></button>
+                <button type="button" onClick={handleDelete} className="flex-shrink-0 bg-white text-red-500 border border-red-100 p-3.5 rounded-xl font-bold hover:bg-red-50 transition-colors outline-none focus:outline-none focus:ring-0"><Icons.Trash2 size={20} /></button>
             )}
-             {/* ⚡️ 修复：新增取消按钮 */}
+             {/* ⚡️ 修复：更新/取消 按钮比例 1:1 */}
             <button type="button" onClick={onClose} className="flex-1 bg-white text-gray-600 border border-gray-200 py-3.5 rounded-xl font-bold hover:bg-gray-50 transition-colors outline-none focus:outline-none focus:ring-0">取消</button>
-            <button type="submit" className="flex-[2] bg-black text-white py-3.5 rounded-xl font-bold hover:bg-gray-800 transition-all transform active:scale-[0.98] shadow-lg shadow-gray-200 outline-none focus:outline-none focus:ring-0" style={{outline:'none'}}>{initialData ? '更新' : '保存'}</button>
+            <button type="submit" className="flex-1 bg-black text-white py-3.5 rounded-xl font-bold hover:bg-gray-800 transition-all transform active:scale-[0.98] shadow-lg shadow-gray-200 outline-none focus:outline-none focus:ring-0" style={{outline:'none'}}>{initialData ? '更新' : '保存'}</button>
           </div>
         </form>
       </div>
@@ -430,6 +434,9 @@ export default function App() {
   const [filterYear, setFilterYear] = useState(() => new Date().getFullYear().toString());
   const [analyticsYear, setAnalyticsYear] = useState(() => new Date().getFullYear().toString());
   const [editingItem, setEditingItem] = useState(null);
+  
+  // ⚡️ 新增：密度切换 (默认 'normal')
+  const [density, setDensity] = useState('normal'); 
 
   const availableYears = useMemo(() => { const years = new Set(items.map(item => item.date.split('-')[0])); const list = Array.from(years).sort().reverse(); const current = new Date().getFullYear().toString(); if (!list.includes(current)) list.unshift(current); return list; }, [items]);
   
@@ -477,6 +484,13 @@ export default function App() {
 
   const handleSuperCatChange = (key) => { setActiveSuperCat(key); setActiveSubCat('all'); };
 
+  // ⚡️ 核心：根据 density 状态决定网格列数
+  const gridClass = useMemo(() => {
+    return density === 'normal' 
+      ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5" // 宽松：每行最多5个
+      : "grid-cols-3 md:grid-cols-4 lg:grid-cols-6 2xl:grid-cols-8"; // 紧凑：每行最多8个
+  }, [density]);
+
   return (
     <div style={appContainerStyle}>
       <GlobalStyles />
@@ -491,6 +505,25 @@ export default function App() {
           </div>
           <div className="flex items-center gap-3">
              <div className="relative hidden md:block group"><Icons.Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-black transition-colors" size={16} /><input type="text" placeholder="搜索..." className="bg-gray-100 border-transparent focus:bg-white border focus:border-black rounded-full pl-9 pr-4 py-1.5 text-sm transition-all w-32 focus:w-48 outline-none focus:outline-none focus:ring-0" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} style={{outline:'none'}} /></div>
+             
+             {/* ⚡️ 新增：密度切换按钮组 */}
+             <div className="hidden sm:flex items-center bg-gray-100 p-0.5 rounded-lg border border-gray-200">
+                <button 
+                  onClick={() => setDensity('normal')} 
+                  className={`p-1.5 rounded-md transition-all ${density === 'normal' ? 'bg-white shadow-sm text-black' : 'text-gray-400 hover:text-gray-600'}`}
+                  title="宽松布局"
+                >
+                  <Icons.Grid size={16} />
+                </button>
+                <button 
+                  onClick={() => setDensity('compact')} 
+                  className={`p-1.5 rounded-md transition-all ${density === 'compact' ? 'bg-white shadow-sm text-black' : 'text-gray-400 hover:text-gray-600'}`}
+                  title="紧凑布局"
+                >
+                  <Icons.GridCompact size={16} />
+                </button>
+             </div>
+
              <button onClick={() => setIsSettingsOpen(true)} className="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition-colors outline-none focus:outline-none focus:ring-0" style={{outline:'none'}}><Icons.Settings size={20} /></button>
              <button className="md:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-full outline-none focus:outline-none focus:ring-0" onClick={() => setViewMode(viewMode === 'list' ? 'analytics' : 'list')} style={{outline:'none'}}>{viewMode === 'list' ? <Icons.BarChart3 size={20} /> : <Icons.Filter size={20} />}</button>
             <button onClick={() => { setEditingItem(null); setIsModalOpen(true); }} className="bg-black hover:bg-gray-800 text-white px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2 transition-all transform active:scale-95 shadow-xl shadow-gray-200 outline-none focus:outline-none focus:ring-0" style={{outline:'none'}}><Icons.Plus size={16} /><span className="hidden sm:inline">记录</span></button>
@@ -525,7 +558,8 @@ export default function App() {
              </div>
         )}
       </nav>
-      <main className="w-full px-6 py-8 safe-bottom-padding">{viewMode === 'analytics' ? <Dashboard items={items} categories={categories} year={analyticsYear} availableYears={availableYears.filter(y => y !== 'all')} onYearChange={setAnalyticsYear} /> : <>{filteredItems.length > 0 ? <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-4 md:gap-6 animate-fade-in pb-20">{filteredItems.map(item => <Card key={item.id} item={item} categoryConfig={categories[item.category]} onDelete={deleteItem} onClick={handleCardClick} />)}</div> : <EmptyState type="list" year={filterYear} />}</>}</main>
+      {/* ⚡️ 修复：gridClass 动态应用到这里 */}
+      <main className="w-full px-6 py-8 safe-bottom-padding">{viewMode === 'analytics' ? <Dashboard items={items} categories={categories} year={analyticsYear} availableYears={availableYears.filter(y => y !== 'all')} onYearChange={setAnalyticsYear} /> : <>{filteredItems.length > 0 ? <div className={`grid gap-4 md:gap-6 animate-fade-in pb-20 ${gridClass}`}>{filteredItems.map(item => <Card key={item.id} item={item} categoryConfig={categories[item.category]} onDelete={deleteItem} onClick={handleCardClick} />)}</div> : <EmptyState type="list" year={filterYear} />}</>}</main>
       
       <Modal 
         isOpen={isModalOpen} 
